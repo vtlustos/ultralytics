@@ -16,6 +16,8 @@ from ultralytics.yolo.data.augment import LetterBox
 from ultralytics.yolo.utils import LOGGER, SimpleClass, deprecation_warn, ops
 from ultralytics.yolo.utils.plotting import Annotator, colors, save_one_box
 
+import cv2
+import pytesseract
 
 class BaseTensor(SimpleClass):
     """
@@ -154,6 +156,18 @@ class Results(SimpleClass):
     def keys(self):
         """Return a list of non-empty attribute names."""
         return [k for k in self._keys if getattr(self, k) is not None]
+  
+    def _lp_ocr_testarac(self, img, bbox):
+        x,y,w,h = int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3])
+        img = cv2.cvtColor(img[y:h, x:w], cv2.COLOR_BGR2GRAY)
+        img = cv2.equalizeHist(img)
+        text = pytesseract.image_to_string(img, 
+            lang ='eng',
+            config =r'--oem 3 --psm 7'
+        )
+        text =  "".join([c for c in text if c in "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"])
+        # text = text if len(text) == 7 else ""
+        return text
 
     def plot(
             self,
@@ -220,6 +234,9 @@ class Results(SimpleClass):
                 c, conf, id = int(d.cls), float(d.conf) if conf else None, None if d.id is None else int(d.id.item())
                 name = ('' if id is None else f'id:{id} ') + names[c]
                 label = (f'{name} {conf:.2f}' if conf else name) if labels else None
+                if names and names[c] == 'license plate':
+                    lp_text = self._lp_ocr_testarac(self.orig_img, d.xyxy.cpu()[0])
+                    label = lp_text if lp_text != '' else label
                 annotator.box_label(d.xyxy.squeeze(), label, color=colors(c, True))
 
         if pred_probs is not None and show_probs:
