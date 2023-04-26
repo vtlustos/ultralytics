@@ -143,6 +143,21 @@ nav:
           - Segment: tasks/segment.md
           - Classify: tasks/classify.md
           - Pose: tasks/pose.md
+  - Quickstart: quickstart.md
+  - Modes:
+      - modes/index.md
+      - Train: modes/train.md
+      - Val: modes/val.md
+      - Predict: modes/predict.md
+      - Export: modes/export.md
+      - Track: modes/track.md
+      - Benchmark: modes/benchmark.md
+  - Tasks:
+      - tasks/index.md
+      - Detect: tasks/detect.md
+      - Segment: tasks/segment.md
+      - Classify: tasks/classify.md
+      - Pose: tasks/pose.md
   - Usage:
       - CLI: usage/cli.md
       - Python: usage/python.md
@@ -200,6 +215,7 @@ nav:
           - comet: reference/yolo/utils/callbacks/comet.md
           - hub: reference/yolo/utils/callbacks/hub.md
           - mlflow: reference/yolo/utils/callbacks/mlflow.md
+          - neptune: reference/yolo/utils/callbacks/neptune.md
           - raytune: reference/yolo/utils/callbacks/raytune.md
           - tensorboard: reference/yolo/utils/callbacks/tensorboard.md
           - wb: reference/yolo/utils/callbacks/wb.md
