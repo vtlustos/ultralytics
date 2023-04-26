@@ -162,6 +162,14 @@ class BaseModel(nn.Module):
         csd = model.float().state_dict()  # checkpoint state_dict as FP32
         csd = intersect_dicts(csd, self.state_dict())  # intersect
         self.load_state_dict(csd, strict=False)  # load
+
+        freeze_layers = set(csd.keys())
+        for k, v in model.named_parameters():
+            v.requires_grad = True
+            if k in freeze_layers:
+                print(f'freezing {k}')
+                v.requires_grad = False
+
         if verbose:
             LOGGER.info(f'Transferred {len(csd)}/{len(self.model.state_dict())} items from pretrained weights')
 
